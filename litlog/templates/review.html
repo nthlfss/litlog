@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content%}
+	<article class="media content-section">
+		<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/' + book.writer.image_file) }}">
+	  <div class="media-body">
+	    <div class="article-metadata">
+	      <a class="mr-2" href="{{ url_for('user_reviews', username=book.writer.username) }}">{{ book.writer.username }}</a>
+	      <small class="text-muted">{{ book.date_posted.strftime('%b %d %Y') }}</small>
+	    </div>
+	    <h5 class="article-title">{{ book.title }} by {{ book.author }}</h5>
+	    <small class="article-content">{{ book.rating }} out of 5</small>
+	    <p class="article-content">{{ book.content }}</p>
+	    {% if book.writer == current_user %}
+	    	<div>
+	    		<a class="btn btn-secondary btn-sm mb-1 mt-1" href="{{ url_for('update_review', review_id=book.id) }}">Update</a>
+	    		<button type ="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+	    	</div>
+	    {% endif %}
+	  </div>
+	</article>
+    <div class="border-top pt-2">
+    <p>
+    <a href="{{ url_for('book_reviews', title=book.title) }}" >Check what other readers thought of this book</a>
+    </p>  
+    </div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="deleteModalLabel">Delete book review?</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	        <form action="{{ url_for('delete_review', review_id=book.id)}}" method="POST">
+	        	<input class="btn btn-danger" type="submit" value="Delete">
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+{% endblock content %}

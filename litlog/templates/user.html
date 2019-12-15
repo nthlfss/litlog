@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content%}
+	<h4 class="mb-3">Book reviews by {{ user.username }} ({{ books.total }})</h4>
+	{% for book in books.items %}
+		<article class="media content-section">
+			<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/' + book.writer.image_file) }}">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <a class="mr-2" href="{{ url_for('user_reviews', username=book.writer.username) }}">{{ book.writer.username }}</a>
+		      <small class="text-muted">{{ book.date_posted.strftime('%b %d %Y') }}</small>
+		    </div>
+		    <h5><a class="article-title" href="{{ url_for('review', review_id=book.id)}}">{{ book.title }} by {{ book.author }}</a></h5>
+		    <p class="article-content">{{ book.content }}</p>
+		  </div>
+		</article>
+	{% endfor %}
+	{% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+		{% if page_num %}
+			{% if books.page == page_num %}
+				<a class="btn btn-info mb-4" href="{{ url_for('user_reviews', username=user.username, page=page_num) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info mb-4" href="{{ url_for('user_reviews', username=user.username, page=page_num) }}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+{% endblock content %}
+
